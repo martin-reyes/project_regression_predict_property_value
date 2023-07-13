@@ -1,6 +1,12 @@
 import pandas as pd
-import env
+
+import sys
 import os
+
+home_directory_path = os.path.expanduser('~')
+sys.path.append(home_directory_path +'/utils')
+import env
+
 
 
 def get_connection(db, user=env.user, host=env.host, password=env.pwd):
@@ -85,10 +91,6 @@ def prep_zillow(df = get_sql_data( '''
     df['county'] = df['fips'].replace({6037:'LA',
                                   6059:'Orange',
                                   6111:'Ventura'})
-    
-    # encode categoricals and drop county code columns
-    df = pd.concat([df, pd.get_dummies(df[['bathrooms', 'bedrooms', 'county']].astype(str))],
-               axis=1).drop(columns=['fips'])
     
     # save csv
     df.to_csv(filename, index=False)
